@@ -26,12 +26,18 @@ jobs:
           npm install
           npm run build --if-present
           npm run test --if-present
+
+      - name: Zip Release
+        uses: TheDoctor0/zip-release@0.7.6
+        with:
+          filename: release.zip
+          path: ./build/*
       
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v3
         with:
           name: node-app
-          path: .
+          path: release.zip
 
   deploy:
     runs-on: ubuntu-latest
@@ -39,8 +45,6 @@ jobs:
     environment:
       name: 'Production'
       url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
-    permissions:
-      id-token: write #This is required for requesting the JWT
 
     steps:
       - name: Download artifact from build job
@@ -61,5 +65,5 @@ jobs:
         with:
           app-name: 'CredHub'
           slot-name: 'Production'
-          package: .
+          package: release.zip
           
