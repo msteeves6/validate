@@ -3,12 +3,9 @@ const { MongoClient } = require('mongodb');
 const bodyParser = require('body-parser');
 
 const app = express();
-
-// Use the port specified by the environment variable in Azure, or 3000 when running locally
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 5000;
 
 // MongoDB connection string
-// Ensure this connection string is correct and that your Azure App Service's IP is allowed in MongoDB Atlas
 const mongoUrl = "mongodb+srv://credhub57:CredHub*2024@credhub.dglqyvp.mongodb.net/?retryWrites=true&w=majority&appName=CredHub";
 
 app.use(bodyParser.json());
@@ -60,15 +57,15 @@ app.post('/validateDegree', async (req, res) => {
             "SchoolID": schoolID,
             "DegreeType": degreeType,
             "DegreeAwarded": degreeAwarded,
-            "YearAchieved": yearAchieved // Corrected typo from "YearAchived" to "YearAchieved"
+            "YearAchived": yearAchieved
         });
 
         client.close();
 
         if (record) {
-            res.json({ DegreeValidated: true });
+            res.send('true');
         } else {
-            res.json({ DegreeValidated: false });
+            res.send('false');
         }
     } catch (error) {
         console.error("Error connecting to MongoDB:", error);
@@ -76,7 +73,7 @@ app.post('/validateDegree', async (req, res) => {
     }
 });
 
-// Endpoint to verify age
+// Endpoint to verify age with corrected field name
 app.post('/validateAge', async (req, res) => {
     const { firstName, lastName, birthDate, dlNumber, expirationDate, state } = req.body;
     const dbName = 'WyoID';
@@ -96,16 +93,16 @@ app.post('/validateAge', async (req, res) => {
             "Last Name": lastName,
             "Birth Date": formattedBirthDate,
             "DL Number": dlNumber,
-            "Expiration Date": formattedExpirationDate, // Corrected typo from "Experation Date" to "Expiration Date"
+            "Experation Date": formattedExpirationDate,
             "State": state
         });
 
         client.close();
 
         if (record) {
-            res.json({ ageValidated: true });
+            res.send('true');
         } else {
-            res.json({ ageValidated: false });
+            res.send('false');
         }
     } catch (error) {
         console.error("Error connecting to MongoDB:", error);
@@ -118,7 +115,6 @@ app.get('/', (req, res) => {
     res.send('Welcome to the Validation Server. Use the /validateDegree or /validateAge endpoints.');
 });
 
-// Start the server
 app.listen(port, () => {
     console.log(`Server running on port ${port}`);
 });
