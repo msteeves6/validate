@@ -6,6 +6,10 @@ on:
       - main
   workflow_dispatch:
 
+permissions:  # Add this section to define permissions for the whole workflow
+  contents: read
+  id-token: write
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
