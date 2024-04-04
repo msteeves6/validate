@@ -1,14 +1,14 @@
-// Server to validte degree and age against mock data
-// in mongodb. Hosted on Azure
-
 const express = require('express');
 const { MongoClient } = require('mongodb');
 const bodyParser = require('body-parser');
 
 const app = express();
-const port = 3000;
+
+// Use the port specified by the environment variable in Azure, or 3000 when running locally
+const port = process.env.PORT || 3000;
 
 // MongoDB connection string
+// Ensure this connection string is correct and that your Azure App Service's IP is allowed in MongoDB Atlas
 const mongoUrl = "mongodb+srv://credhub57:CredHub*2024@credhub.dglqyvp.mongodb.net/?retryWrites=true&w=majority&appName=CredHub";
 
 app.use(bodyParser.json());
@@ -60,7 +60,7 @@ app.post('/validateDegree', async (req, res) => {
             "SchoolID": schoolID,
             "DegreeType": degreeType,
             "DegreeAwarded": degreeAwarded,
-            "YearAchived": yearAchieved
+            "YearAchieved": yearAchieved // Corrected typo from "YearAchived" to "YearAchieved"
         });
 
         client.close();
@@ -76,7 +76,7 @@ app.post('/validateDegree', async (req, res) => {
     }
 });
 
-// Endpoint to verify age with corrected field name
+// Endpoint to verify age
 app.post('/validateAge', async (req, res) => {
     const { firstName, lastName, birthDate, dlNumber, expirationDate, state } = req.body;
     const dbName = 'WyoID';
@@ -96,7 +96,7 @@ app.post('/validateAge', async (req, res) => {
             "Last Name": lastName,
             "Birth Date": formattedBirthDate,
             "DL Number": dlNumber,
-            "Experation Date": formattedExpirationDate,
+            "Expiration Date": formattedExpirationDate, // Corrected typo from "Experation Date" to "Expiration Date"
             "State": state
         });
 
@@ -118,6 +118,7 @@ app.get('/', (req, res) => {
     res.send('Welcome to the Validation Server. Use the /validateDegree or /validateAge endpoints.');
 });
 
+// Start the server
 app.listen(port, () => {
     console.log(`Server running on port ${port}`);
 });
