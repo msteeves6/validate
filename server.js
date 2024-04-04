@@ -76,6 +76,7 @@ app.post('/validateDegree', async (req, res) => {
 // Endpoint to verify age with corrected field name
 app.post('/validateAge', async (req, res) => {
     const { firstName, lastName, birthDate, dlNumber, expirationDate, state } = req.body;
+    console.log("Received data:", req.body);
     const dbName = 'WyoID';
     const collectionName = 'idData';
 
